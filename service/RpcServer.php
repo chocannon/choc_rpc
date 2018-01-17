@@ -44,11 +44,7 @@ class RpcServer extends BaseServer
             $ret = ob_get_contents();
         } catch (Exception $e) {
             if ($e instanceof LoadFailed) {
-                $ret = json_encode([
-                    'code'    => '-1',
-                    'message' => 'API Unavailable',
-                    'result'  => []
-                ], JSON_UNESCAPED_UNICODE);
+                $ret = \Output::json(\Code::ROUTE_UNFOUND, 'API Unavailable');
             } elseif ($e instanceof ParamException) {
                 $ret = json_encode([
                     'code'    => $e->getCode(),

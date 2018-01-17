@@ -6,20 +6,32 @@
 // +----------------------------------------------------------------------
 class Output
 {
-    protected $code    = 200;
-    protected $message = 'Successful';
-    protected $time    = 0;  
-    protected $data    = [];
+    protected static $code    = 0;
+    protected static $message = 'Successful';
+    protected static $data    = [];
 
 
-    function __toString()
+    public static function json(...$args)
     {
-        $output = [
-            'code'    => $this->code,
-            'message' => $this->message,
-            'time'    => time(),
-            'data'    => $this->data
-        ];
-        return json_encode($output, JSON_UNESCAPED_UNICODE | JSON_FORCE_OBJECT);
+        $obj = new stdClass;
+        switch (count($args)) {
+            case 0:
+                $obj->code      = self::$code;
+                $obj->message   = self::$message;
+                $obj->data      = (object)self::$data;
+                break;
+            case 1:
+                $obj->code      = self::$code;
+                $obj->message   = self::$message;
+                $obj->data      = (object)$args[0];
+                break;
+            default:
+                $obj->code      = (int)$args[0];
+                $obj->message   = (string)$args[1];
+                $obj->data      = (object)self::$data;
+                break;
+        }
+        $obj->timestamp = time();
+        return json_encode($obj, JSON_UNESCAPED_UNICODE);
     }
 }

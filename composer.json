@@ -4,7 +4,8 @@
         "doctrine/dbal": "^2.6",
         "illuminate/validation": "^5.5",
         "nikic/fast-route": "^1.2",
-        "chocannon/coral": "^1.1"
+        "chocannon/coral": "^1.1",
+        "league/fractal": "^0.17.0"
     },
     "autoload": {
         "psr-4": {
