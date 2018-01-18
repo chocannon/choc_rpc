@@ -4,7 +4,7 @@
 // +----------------------------------------------------------------------
 // | Author: qh.cao
 // +----------------------------------------------------------------------
-use BadFunctionCallException;
+use App\Exceptions\ServiceException;
 
 class Logger
 {
@@ -38,7 +38,7 @@ class Logger
     public function __call($method, array $args = [])
     {
         if (!in_array($method, self::LEVEL)) {
-            throw new BadFunctionCallException("Method {$method} Not Found In " . __CLASS__);
+            throw new ServiceException(__CLASS__ . " : Method {$method} Not Found!");
         }
         array_unshift($args, $method);
         return call_user_func_array([$this, 'log'], $args);
@@ -48,7 +48,7 @@ class Logger
     public static function __callStatic($method, array $args = [])
     {
         if (!in_array($method, self::LEVEL)) {
-            throw new BadFunctionCallException("Method {$method} Not Found In " . __CLASS__);
+            throw new ServiceException(__CLASS__ . " : Method {$method} Not Found!");
         }
         if (is_null(self::$instance)) {
             self::$instance = new static;

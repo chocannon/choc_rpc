@@ -5,20 +5,20 @@ abstract class Controller extends Yaf\Controller_Abstract
     {
         // list($state, $msg) = Validation::check($this->getRequest());
         // if (false === $state) {
-        //     throw new App\Exceptions\ParamException($msg);
+        //     throw new App\Exceptions\LogicException($msg);
         // }
     }
 
     
     /**
      * 响应客户端
-     * @param  array  $data 响应数组
+     * @param  string  $data 响应数组
      * @return [type]       [description]
      */
-    protected function response(array $data) 
+    protected function response(string $data) 
     {
         $response = $this->getResponse();
-        $response->setBody(json_encode($data, JSON_UNESCAPED_UNICODE));
+        $response->setBody($data);
         $response->response();
     }
 }

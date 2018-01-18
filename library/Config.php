@@ -4,7 +4,7 @@
 // +----------------------------------------------------------------------
 // | Author: qh.cao
 // +----------------------------------------------------------------------
-use RuntimeException;
+use App\Exceptions\ServiceException;
 
 class Config 
 {
@@ -15,7 +15,7 @@ class Config
     {
         $iniFile = self::CONF_PATH . $ini . self::SUFFIX;
         if (!file_exists($iniFile)) {
-            throw new RuntimeException("Config File {$$iniFile} Not Found!");
+            throw new ServiceException(__CLASS__ . " : Config File {$$iniFile} Not Found!");
         }
 
         $config = new Yaf\Config\Ini($iniFile, ini_get('yaf.environ'));

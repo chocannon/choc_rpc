@@ -6,11 +6,13 @@
 // +----------------------------------------------------------------------
 namespace Service;
 
+use Output;
 use Exception;
 use Coral\Utility\Package;
 use Coral\Server\BaseServer;
 use Yaf\Exception\LoadFailed;
-use App\Exceptions\ParamException;
+use App\Exceptions\LogicException;
+use App\Exceptions\ServiceException;
 
 class RpcServer extends BaseServer 
 {
@@ -43,26 +45,18 @@ class RpcServer extends BaseServer
             $this->application->getDispatcher()->dispatch($request);
             $ret = ob_get_contents();
         } catch (Exception $e) {
-            if ($e instanceof LoadFailed) {
-                $ret = \Output::json(\Code::ROUTE_UNFOUND, 'API Unavailable');
-            } elseif ($e instanceof ParamException) {
-                $ret = json_encode([
-                    'code'    => $e->getCode(),
-                    'message' => $e->getMessage(),
-                    'result'  => []
-                ], JSON_UNESCAPED_UNICODE);
-            } else {
+            if ($e instanceof ServiceException 
+                || $e instanceof LogicException 
+                || $e instanceof LoadFailed) {
+                $ret = Output::json($e->getCode(), $e->getMessage());
+            }else{
                 \Logger::error("receive:{receive}\r\ncode:{code}\r\nmessage:{message}\r\ntrace:{trace}", [
                     'receive' => $receive,
                     'code'    => $e->getCode(),
                     'message' => $e->getMessage(),
                     'trace'   => $e->getTrace(),
                 ]);
-                $ret = json_encode([
-                    'code'    => '500',
-                    'message' => 'System Error',
-                    'result'  => []
-                ], JSON_UNESCAPED_UNICODE);
+                $ret = Output::json(500, 'System Error');
             }
         }
         ob_end_clean();

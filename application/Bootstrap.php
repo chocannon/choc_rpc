@@ -35,16 +35,7 @@ class Bootstrap extends Yaf\Bootstrap_Abstract
 
 	public function _initRoute(Yaf\Dispatcher $dispatcher)
     {
-        $routes = require APPLICATION_PATH . "/route/route.php";
-        $dispatcher = \FastRoute\simpleDispatcher(
-            function(\FastRoute\RouteCollector $handler) use ($routes) {
-                foreach ($routes as $route) {
-                    $handler->addRoute(strtoupper($route[0]), $route[1], $route[2]);
-                }
-            }
-        );
-
-        Yaf\Registry::set('routeDispatcher', $dispatcher);
+        
 	}
 
     public function _initDbAdapter() 

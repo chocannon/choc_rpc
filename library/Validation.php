@@ -4,7 +4,7 @@
 // +----------------------------------------------------------------------
 // | Author: qh.cao
 // +----------------------------------------------------------------------
-use RuntimeException;
+use App\Exceptions\ServiceException;
 use Illuminate\Validation\Factory;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Translation\FileLoader;
@@ -45,12 +45,12 @@ class Validation extends Factory
 
         $validFile  = self::VALID_PATH . self::DS . $moduleName . self::DS . $contrlName . self::SUFFIX;
         if (!file_exists($validFile)) {
-            throw new RuntimeException("Validation File {$validFile} Not Found!");
+            throw new ServiceException(__CLASS__ . " : Validation File {$validFile} Not Found!");
         }
 
         $validations = require $validFile;
         if (!is_array($validations)) {
-            throw new RuntimeException("Validation File {$validFile} Not Available!");
+            throw new ServiceException(__CLASS__ . " : Validation File {$validFile} Not Available!");
         }
         
         if (array_key_exists($actionName, $validations)) {

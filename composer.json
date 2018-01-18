@@ -1,11 +1,10 @@
 {
     "require": {
-        "illuminate/database": "^5.5",
         "doctrine/dbal": "^2.6",
         "illuminate/validation": "^5.5",
-        "nikic/fast-route": "^1.2",
         "chocannon/coral": "^1.1",
-        "league/fractal": "^0.17.0"
+        "league/fractal": "^0.17.0",
+        "illuminate/database": "^5.5"
     },
     "autoload": {
         "psr-4": {

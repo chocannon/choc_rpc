@@ -42,6 +42,7 @@ class IndexController extends Controller
             ];
         });
         $array = $fractal->createData($resource)->toArray();
-        return $this->response($array);
+
+        return $this->response(Output::json($array));
     }
 }
