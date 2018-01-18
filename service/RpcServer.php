@@ -7,6 +7,7 @@
 namespace Service;
 
 use Output;
+use Helper;
 use Exception;
 use Coral\Utility\Package;
 use Coral\Server\BaseServer;
@@ -36,12 +37,13 @@ class RpcServer extends BaseServer
     public function onReceive(\Swoole\Server $serv, int $fd, int $reactorId, string $data) 
     {
         $receive = Package::decode($data);
-        $request = new \Yaf\Request\Http($receive['url']);
-        array_walk($receive['params'], function ($val, $key) use ($request) {
-            $request->setParam($key, $val);
-        });
         ob_start();
         try {
+            $this->checkAuthorize($receive);
+            $request = new \Yaf\Request\Http($receive['url']);
+            array_walk($receive['params'], function ($val, $key) use ($request) {
+                $request->setParam($key, $val);
+            });
             $this->application->getDispatcher()->dispatch($request);
             $ret = ob_get_contents();
         } catch (Exception $e) {
@@ -61,5 +63,21 @@ class RpcServer extends BaseServer
         }
         ob_end_clean();
         $serv->send($fd, Package::encode($ret));
+    }
+
+
+    protected function checkAuthorize($data)
+    {
+        if (!isset($data['auth']['appKey']) || !isset($data['auth']['appSecret'])) {
+            throw new ServiceException('Authorize Parameter Missing!');
+        }
+       
+        if ($data['auth']['appSecret'] !== Helper::hash([
+            'url'    => $data['url'],
+            'params' => $data['params'],
+        ], $data['auth']['appKey'])) {
+            throw new ServiceException('Authorize Failure!');
+        }
+        return true;
     }
 }
